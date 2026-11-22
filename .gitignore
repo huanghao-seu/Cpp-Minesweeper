@@ -1,0 +1,9 @@
+# 编译产物
+*.exe
+*.o
+*.obj
+*.stackdump
+
+# 构建输出目录
+build/
+out/

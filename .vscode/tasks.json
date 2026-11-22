@@ -1,0 +1,45 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "cppbuild",
+			"label": "C++: g++ build active file",
+			"command": "C:\\mingw64\\mingw64\\bin\\g++.exe",
+			"args": [
+				"-g",
+				"-std=c++17",
+				"-Wall",
+				"${file}",
+				"-o",
+				"${fileDirname}\\${fileBasenameNoExtension}.exe"
+			],
+			"options": {
+				"cwd": "${fileDirname}"
+			},
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"detail": "MinGW g++ 单文件编译，输出到源文件同目录"
+		},
+		{
+			"label": "C++: build and run active file",
+			"type": "shell",
+			"command": "${fileDirname}\\${fileBasenameNoExtension}.exe",
+			"options": {
+				"cwd": "${fileDirname}"
+			},
+			"dependsOn": "C++: g++ build active file",
+			"problemMatcher": [],
+			"presentation": {
+				"reveal": "always",
+				"panel": "shared",
+				"clear": true
+			},
+			"detail": "先编译再在终端里运行（终端可直接键盘输入）"
+		}
+	]
+}

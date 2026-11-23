@@ -1,6 +1,7 @@
 #include<iostream>
 #include<vector>
 #include<iomanip>
+#include <chrono>
 using namespace std;
 
 const int ROW=9,COL=9,MINES=10;
@@ -67,6 +68,8 @@ void expand(int x,int y,int&nMine){
 int main() {
     init();
     printBoard();
+    //计时
+    auto start_time = chrono::steady_clock::now();
     bool isPlaying=true;
     while(isPlaying){
        int x,y;
@@ -115,6 +118,13 @@ int main() {
         cout<<"You Win"<<endl;
         printBoard();
       }
+       // --- 计算并显示时间 ---
+        auto current_time = chrono::steady_clock::now();
+        auto duration = chrono::duration_cast<chrono::seconds>(current_time - start_time);
+        int total_seconds = duration.count();
+
+        cout << "⏱️ 当前用时: " << total_seconds / 60 << "分 " << total_seconds % 60 << "秒" << endl;
+        cout << "---------------------------------" << endl;
 }
 
     return 0;

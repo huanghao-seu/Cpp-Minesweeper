@@ -4,8 +4,11 @@
 using namespace std;
 
 const int ROW=9,COL=9,MINES=10;
+int nMine=ROW*COL-MINES;
 vector<vector<int>> mine_map(ROW ,vector<int>(COL,0));
 vector<vector<char>> view_map(ROW, vector<char>(COL, '#'));
+const int dx[8] = {1, 1, 1, 0, 0, -1, -1, -1};
+const int dy[8] = {1, 0, -1, 1, -1, 1, 0, -1};
 
 void init() {
     srand(time(0));
@@ -32,8 +35,6 @@ void printBoard() {
     }
 }
 int count_mines(int x,int y){
-    int dx[8]={1,1,1,0,0,-1,-1,-1};
-    int dy[8]={1,0,-1,1,-1,1,0,-1};
     int count=0;
     for(int d=0;d<8;d++){
         int nx=x+dx[d];
@@ -46,34 +47,64 @@ int count_mines(int x,int y){
     }
     return count;
 }
+void expand(int x,int y,int&nMine){
+     if (x < 0 || x >= ROW || y < 0 || y >= COL) return;
+     if (view_map[x][y] != '#' || mine_map[x][y] == 1) return;
+     int tem=count_mines(x,y);
+     view_map[x][y] = tem + '0';
+     nMine--;
+     if(tem==0){
+        for(int d=0;d<8;d++){
+          int nx=x+dx[d];
+          int ny=y+dy[d];
+          if(nx>=0&&nx<ROW&&ny>=0&&ny<COL){
+          expand(nx,ny,nMine);
+          }
+        }
+     }
+}
 
 int main() {
     init();
     printBoard();
     bool isPlaying=true;
-    int nMine=ROW*COL-MINES;
     while(isPlaying){
        int x,y;
-       cin>>x>>y;
+       char op;
+       cout << "输入 行 列 操作(O排雷/F插旗): ";
+       cin>>x>>y>>op;
        if(x>=0&&x<ROW&&y>=0&&y<COL) {
-//-----------中雷了
-        if(mine_map[x][y]==1){
-        isPlaying=0;
-        cout<<"Game Over"<<endl;
-        view_map[x][y]='*';
-        printBoard();
-       }
-//-----------未中雷
-       else{
-         if (view_map[x][y] == '#') {
-             int tem = count_mines(x,y);
-             view_map[x][y] = tem + '0';
-             printBoard();
-             nMine--;
-         } else {
-             cout << "这个格子已经被翻开过啦！" << endl;
-         }
-       }
+          if(op=='O'){
+    //-----------中雷了
+            if(mine_map[x][y]==1){
+            isPlaying=0;
+            cout<<"Game Over"<<endl;
+            view_map[x][y]='*';
+            printBoard();
+        }
+    //-----------未中雷
+            else{
+              if (view_map[x][y] == '#') {
+                expand(x,y,nMine);
+                printBoard();
+              } else {
+                cout << "这个格子已经被翻开过啦！" << endl;
+              }
+            }
+        }
+        else if(op=='F'){
+            if(view_map[x][y]=='#'){
+                view_map[x][y]='F';
+            }
+            else if(view_map[x][y]=='F'){
+                view_map[x][y]='#';
+            }
+            else{
+                cout << "已经翻开的格子不能插旗！" << endl;
+            }
+            printBoard();
+            continue;
+        }
     }
       else{
         cout<<"无效"<<endl;

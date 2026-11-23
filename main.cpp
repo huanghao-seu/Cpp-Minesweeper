@@ -31,9 +31,60 @@ void printBoard() {
         cout << endl;
     }
 }
+int count_mines(int x,int y){
+    int dx[8]={1,1,1,0,0,-1,-1,-1};
+    int dy[8]={1,0,-1,1,-1,1,0,-1};
+    int count=0;
+    for(int d=0;d<8;d++){
+        int nx=x+dx[d];
+        int ny=y+dy[d];
+        if(nx>=0&&nx<ROW&&ny>=0&&ny<COL){
+            if(mine_map[nx][ny]==1){
+                count++;
+            }
+        }
+    }
+    return count;
+}
+
 int main() {
     init();
     printBoard();
+    bool isPlaying=true;
+    int nMine=ROW*COL-MINES;
+    while(isPlaying){
+       int x,y;
+       cin>>x>>y;
+       if(x>=0&&x<ROW&&y>=0&&y<COL) {
+//-----------中雷了
+        if(mine_map[x][y]==1){
+        isPlaying=0;
+        cout<<"Game Over"<<endl;
+        view_map[x][y]='*';
+        printBoard();
+       }
+//-----------未中雷
+       else{
+         if (view_map[x][y] == '#') {
+             int tem = count_mines(x,y);
+             view_map[x][y] = tem + '0';
+             printBoard();
+             nMine--;
+         } else {
+             cout << "这个格子已经被翻开过啦！" << endl;
+         }
+       }
+    }
+      else{
+        cout<<"无效"<<endl;
+        continue;}
+//---------- 胜利条件
+      if(nMine==0){
+        isPlaying=0;
+        cout<<"You Win"<<endl;
+        printBoard();
+      }
+}
 
     return 0;
 }
